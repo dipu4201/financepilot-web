@@ -1,36 +1,38 @@
-# Frontend Update — Admin Dashboard (Part 1: Login + Categories + Authors)
+# Article লেখার Editor
 
 ## যা আছে এতে
 
 ```
-app/admin/login/page.tsx        ← লগইন পেজ
-app/admin/dashboard/page.tsx    ← Article তালিকা (এখন খালি, editor পরের ধাপে)
-app/admin/categories/page.tsx   ← Category তালিকা + যোগ করার ফর্ম
-app/admin/authors/page.tsx      ← Author তালিকা + যোগ করার ফর্ম
-lib/admin-api.ts                ← Backend-এর admin endpoints কল করার helper
-lib/admin-guard.tsx             ← লগইন চেক করে, না থাকলে /admin/login-এ পাঠায়
+components/ArticleForm.tsx              ← মূল ফর্ম (নতুন/এডিট দুটোতেই ব্যবহার হয়)
+app/admin/articles/new/page.tsx         ← নতুন article লেখার পেজ
+app/admin/articles/[id]/edit/page.tsx   ← বিদ্যমান article সম্পাদনার পেজ
+lib/admin-api.ts                        ← আপডেট (articles.get() যোগ হয়েছে) — পুরনোটা replace করো
 ```
 
 ## Upload করার নিয়ম
 
 `financepilot-web` repo-তে:
 
-1. `app` folder-এ ঢুকে নতুন subfolder তৈরি করো `admin/login/` (Create new file
-   দিয়ে `app/admin/login/page.tsx` টাইপ করলেই GitHub subfolder বানিয়ে নেবে)
-   — সেখানে zip-এর `app/admin/login/page.tsx` কপি করো
-2. একইভাবে `app/admin/dashboard/page.tsx`, `app/admin/categories/page.tsx`,
-   `app/admin/authors/page.tsx` — প্রতিটা তার নিজের path-এ বসাও
-3. `lib/` folder-এ `admin-api.ts` আর `admin-guard.tsx` upload করো
-4. Commit করো
+1. `components/` নামে নতুন folder তৈরি করো (না থাকলে), তাতে `ArticleForm.tsx` upload করো
+2. `app/admin/articles/new/page.tsx` — নতুন path তৈরি করে upload করো
+3. `app/admin/articles/[id]/edit/page.tsx` — খেয়াল রাখো folder নামে বর্গাকার
+   bracket `[id]` ঠিক আছে (এটা Next.js-এর dynamic route syntax, বানান exact
+   রাখতে হবে)
+4. `lib/admin-api.ts` — পুরনোটা সম্পূর্ণ **replace** করো এই নতুন ভার্সন দিয়ে
 
-## প্রথমবার লগইন করার জন্য admin user লাগবে
+Commit করো — Vercel automatic redeploy করবে।
 
-Database-এ এখনো কোনো admin user নাই (শুধু `users` table খালি)। এটা
-তৈরি করার জন্য পরের ধাপে আমি একটা migration/seeder দেব যেটা একটা
-admin account বানাবে — সেটা ছাড়া `/admin/login`-এ ঢুকে login করা যাবে না।
+## ব্যবহার
 
-## এখনো বাকি
+1. Dashboard-এ "New article" চাপো
+2. Title, category, author, content লিখে **"Create draft"** চাপো —
+   এতে article তৈরি হয়ে draft অবস্থায় থাকবে, edit page-এ নিয়ে যাবে
+3. Edit page-এ থাকা অবস্থায় **"Publish"** চাপলে article live হয়ে যাবে,
+   homepage-এ trending/featured section-এ (checkbox টিক দেওয়া থাকলে) দেখা যাবে
 
-- Article লেখার/সম্পাদনার editor (`app/admin/articles/new/page.tsx`,
-  `app/admin/articles/[id]/edit/page.tsx`) — পরের ধাপে
-- প্রথম admin user তৈরি — পরের ধাপে
+## সীমাবদ্ধতা (এখনকার জন্য)
+
+Article edit করার সময় সব article টেনে এনে id দিয়ে খোঁজা হয় (backend-এ
+একটা নির্দিষ্ট article-এর জন্য আলাদা admin endpoint এখনো নাই) — খুব বেশি
+article হলে এটা ধীর হয়ে যাবে, তখন backend-এ `GET
+/api/admin/articles/{id}` endpoint যোগ করতে হবে।
