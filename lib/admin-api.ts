@@ -118,6 +118,10 @@ export const adminApi = {
       adminFetch<{ data: AdminArticle[] }>(
         `/api/admin/articles${status ? `?status=${status}` : ""}`
       ),
+    get: (id: number) =>
+      adminFetch<{ data: AdminArticle[] }>("/api/admin/articles").then(
+        (res) => res.data.find((a) => a.id === id)
+      ),
     create: (data: Partial<AdminArticle>) =>
       adminFetch<AdminArticle>("/api/admin/articles", {
         method: "POST",
