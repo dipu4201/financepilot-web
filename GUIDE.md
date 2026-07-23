@@ -1,37 +1,36 @@
-# Homepage → Real API Connection
+# Frontend Update — Admin Dashboard (Part 1: Login + Categories + Authors)
 
-## যা বদলেছে
+## যা আছে এতে
 
-`app/page.tsx` — আগের placeholder card ("Connects to the Articles API...")
-বাদ দিয়ে এখন সরাসরি Laravel API থেকে categories, trending articles, এবং
-featured articles fetch করে।
+```
+app/admin/login/page.tsx        ← লগইন পেজ
+app/admin/dashboard/page.tsx    ← Article তালিকা (এখন খালি, editor পরের ধাপে)
+app/admin/categories/page.tsx   ← Category তালিকা + যোগ করার ফর্ম
+app/admin/authors/page.tsx      ← Author তালিকা + যোগ করার ফর্ম
+lib/admin-api.ts                ← Backend-এর admin endpoints কল করার helper
+lib/admin-guard.tsx             ← লগইন চেক করে, না থাকলে /admin/login-এ পাঠায়
+```
 
-`lib/types.ts`, `lib/api.ts` — নতুন ফাইল। API response-এর shape (TypeScript
-types) এবং fetch helper functions।
+## Upload করার নিয়ম
 
-## কেন React Query ব্যবহার করিনি এখানে
+`financepilot-web` repo-তে:
 
-homepage-এর content search engine crawler-দের কাছে সরাসরি HTML-এ থাকা
-দরকার (Google Discover/News optimization-এর জন্য brief-এ এটাই বলা ছিল)।
-তাই client-side React Query-এর বদলে Next.js-এর built-in server-side fetch
-+ ISR (`revalidate = 60`) ব্যবহার করা হয়েছে — প্রতি ৬০ সেকেন্ডে page নিজে
-থেকেই আপডেট হবে, কিন্তু crawler-রা সবসময় পূর্ণ HTML পাবে।
+1. `app` folder-এ ঢুকে নতুন subfolder তৈরি করো `admin/login/` (Create new file
+   দিয়ে `app/admin/login/page.tsx` টাইপ করলেই GitHub subfolder বানিয়ে নেবে)
+   — সেখানে zip-এর `app/admin/login/page.tsx` কপি করো
+2. একইভাবে `app/admin/dashboard/page.tsx`, `app/admin/categories/page.tsx`,
+   `app/admin/authors/page.tsx` — প্রতিটা তার নিজের path-এ বসাও
+3. `lib/` folder-এ `admin-api.ts` আর `admin-guard.tsx` upload করো
+4. Commit করো
 
-## Upload করার নিয়ম (আগের মতোই)
+## প্রথমবার লগইন করার জন্য admin user লাগবে
 
-1. `financepilot-web` repo-তে `app/page.tsx` — এই ফাইলটা **replace/overwrite**
-   করো (Upload files → পুরনোটার জায়গায় নতুনটা বসবে)
-2. `lib/` folder নতুন করে তৈরি করে তাতে `types.ts` আর `api.ts` upload করো
-3. Commit করো — Vercel automatic redeploy করবে
-
-## Backend-এ যদি ছবি (featured image) থাকে
-
-`next.config.ts`-এ Supabase storage domain আগে থেকেই allow করা আছে
-(`**.supabase.co`)। যদি Render/অন্য কোনো domain থেকে ছবি আসে, সেই domain-ও
-`remotePatterns`-এ যোগ করতে হবে, নইলে `<Image>` component error দেবে।
+Database-এ এখনো কোনো admin user নাই (শুধু `users` table খালি)। এটা
+তৈরি করার জন্য পরের ধাপে আমি একটা migration/seeder দেব যেটা একটা
+admin account বানাবে — সেটা ছাড়া `/admin/login`-এ ঢুকে login করা যাবে না।
 
 ## এখনো বাকি
 
-- `app/articles/[slug]/page.tsx` — article detail page
-- `app/categories/[slug]/page.tsx` — category listing page
-- Newsletter form (React Hook Form + Zod, POST করবে `/api/newsletter/subscribe`-এ)
+- Article লেখার/সম্পাদনার editor (`app/admin/articles/new/page.tsx`,
+  `app/admin/articles/[id]/edit/page.tsx`) — পরের ধাপে
+- প্রথম admin user তৈরি — পরের ধাপে
