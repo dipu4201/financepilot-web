@@ -1,32 +1,30 @@
-# Article Detail Page
+# Categories + Newsletter পেজ
 
 ## যা আছে এতে
 
 ```
-app/articles/[slug]/page.tsx   ← article-এর নিজস্ব পেজ (title, content, SEO)
-globals-addition.css           ← article content-এর জন্য styling (আলাদা ফাইল, merge করতে হবে)
+app/categories/page.tsx          ← সব category-র তালিকা
+app/categories/[slug]/page.tsx   ← একটা category-র article তালিকা
+app/newsletter/page.tsx          ← newsletter subscribe ফর্ম
 ```
 
 ## Upload করার নিয়ম
 
-`financepilot-web` repo-তে:
+`financepilot-web` repo-তে `app/` folder-এ:
 
-1. `app/articles/[slug]/page.tsx` — নতুন path তৈরি করে upload করো (bracket
-   `[slug]` সহ exact নাম)
-2. `globals-addition.css`-এর ভিতরের পুরো কোড কপি করো, তারপর repo-র
-   `app/globals.css` ফাইলে **Edit** করে একদম নিচে গিয়ে paste করো (এটা নতুন
-   ফাইল না, বিদ্যমান `globals.css`-এর শেষে যোগ করা)
-3. Commit করো
+1. `app/categories/page.tsx` — নতুন path তৈরি করে upload করো
+2. `app/categories/[slug]/page.tsx` — bracket `[slug]` সহ exact নাম দিয়ে
+3. `app/newsletter/page.tsx` — নতুন path
 
-## যা কাজ করবে এখন
+Commit করো — Vercel automatic redeploy করবে।
 
-- Homepage-এ article card-এ ক্লিক করলে পুরো article পেজ খুলবে
-- Title, author, date, reading time, featured image, full content দেখাবে
-- Google-এর জন্য Article + Breadcrumb JSON-LD schema, আর proper meta
-  title/description/OG tags থাকবে (SEO-friendly)
+## এখন যা কাজ করবে
 
-## এখনো বাকি
+- Homepage-এর "Browse guides" → `/categories` পেজ খুলবে
+- Category card-এ ক্লিক → সেই category-র article তালিকা
+- "Join the newsletter" → subscribe ফর্ম, submit করলে backend-এ email save হবে
 
-- `/categories/[slug]` পেজ — category-তে ক্লিক করলে এখনো ৪০৪ দেখাবে
-- `/newsletter` পেজ
-- `/authors/[slug]` পেজ
+## বাকি
+
+- `/authors/[slug]` পেজ (author profile) — এখনো নাই, কিন্তু কোথাও link করা
+  নাই এখনো, তাই জরুরি না
