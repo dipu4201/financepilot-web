@@ -67,6 +67,12 @@ export interface Author {
   title: string | null;
 }
 
+export interface MediaItem {
+  id: number;
+  url: string;
+  alt_text: string | null;
+}
+
 export interface AdminArticle {
   id: number;
   title: string;
@@ -76,6 +82,8 @@ export interface AdminArticle {
   status: string;
   author_id: number;
   category_id: number;
+  featured_media_id?: number | null;
+  featured_media?: MediaItem | null;
   is_featured: boolean;
   is_trending: boolean;
   is_editors_pick: boolean;
@@ -108,6 +116,14 @@ export const adminApi = {
     list: () => adminFetch<Author[]>("/api/admin/authors"),
     create: (data: { name: string; slug?: string; title?: string; bio?: string }) =>
       adminFetch<Author>("/api/admin/authors", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+  },
+
+  media: {
+    create: (data: { url: string; alt_text?: string; file_name?: string }) =>
+      adminFetch<MediaItem>("/api/admin/media", {
         method: "POST",
         body: JSON.stringify(data),
       }),
