@@ -50,3 +50,68 @@
     @apply border border-white/40 bg-white/60 backdrop-blur-lg;
   }
 }
+
+/* Append this to app/globals.css inside the @layer components block,
+   or just after it — styles the HTML content of published articles */
+
+.article-content {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #111827;
+}
+
+.article-content > * + * {
+  margin-top: 1.25em;
+}
+
+.article-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 2em;
+}
+
+.article-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.75em;
+}
+
+.article-content p {
+  color: #374151;
+}
+
+.article-content a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.article-content ul,
+.article-content ol {
+  padding-left: 1.5em;
+}
+
+.article-content ul {
+  list-style: disc;
+}
+
+.article-content ol {
+  list-style: decimal;
+}
+
+.article-content blockquote {
+  border-left: 3px solid #2563eb;
+  padding-left: 1em;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.article-content img {
+  border-radius: 1rem;
+}
+
+.article-content code {
+  background: #f1f5f9;
+  padding: 0.15em 0.4em;
+  border-radius: 0.375rem;
+  font-size: 0.9em;
+}
