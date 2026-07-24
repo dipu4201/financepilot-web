@@ -1,30 +1,43 @@
-# Categories + Newsletter পেজ
+# ছবি Upload ফিচার
 
-## যা আছে এতে
+## যা আছে এই zip-এ (frontend)
 
 ```
-app/categories/page.tsx          ← সব category-র তালিকা
-app/categories/[slug]/page.tsx   ← একটা category-র article তালিকা
-app/newsletter/page.tsx          ← newsletter subscribe ফর্ম
+lib/supabase.ts          ← নতুন — সরাসরি Supabase Storage-এ ছবি upload করে
+lib/admin-api.ts         ← আপডেট (media.create যোগ হয়েছে) — replace করো
+components/ArticleForm.tsx ← আপডেট (ছবি upload UI যোগ হয়েছে) — replace করো
+package.json              ← আপডেট (@supabase/supabase-js যোগ হয়েছে) — replace করো
+```
+
+## backend patch (আলাদা zip: financepilot-api-media.zip)
+
+```
+app/Http/Controllers/Api/Admin/MediaController.php  ← নতুন
+routes/api.php                                        ← আপডেট, replace করো
 ```
 
 ## Upload করার নিয়ম
 
-`financepilot-web` repo-তে `app/` folder-এ:
+**frontend (`financepilot-web` repo):**
+1. `lib/supabase.ts` — নতুন ফাইল
+2. `lib/admin-api.ts` — replace
+3. `components/ArticleForm.tsx` — replace
+4. `package.json` — replace (root-এ)
+5. Commit করো
 
-1. `app/categories/page.tsx` — নতুন path তৈরি করে upload করো
-2. `app/categories/[slug]/page.tsx` — bracket `[slug]` সহ exact নাম দিয়ে
-3. `app/newsletter/page.tsx` — নতুন path
+**backend (`financepilot-api` repo):**
+1. `app/Http/Controllers/Api/Admin/MediaController.php` — নতুন
+2. `routes/api.php` — replace
+3. Commit করো
 
-Commit করো — Vercel automatic redeploy করবে।
+## নিশ্চিত করো (আগে করা না থাকলে)
 
-## এখন যা কাজ করবে
+- Supabase-এ **Storage → bucket নাম `media`, Public bucket চালু**
+- Vercel-এ env variable: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-- Homepage-এর "Browse guides" → `/categories` পেজ খুলবে
-- Category card-এ ক্লিক → সেই category-র article তালিকা
-- "Join the newsletter" → subscribe ফর্ম, submit করলে backend-এ email save হবে
+## ব্যবহার
 
-## বাকি
-
-- `/authors/[slug]` পেজ (author profile) — এখনো নাই, কিন্তু কোথাও link করা
-  নাই এখনো, তাই জরুরি না
+Article লেখার/সম্পাদনার পেজে এখন "Featured image" নামে একটা ফাইল-চয়নকারী
+থাকবে। ছবি সিলেক্ট করলেই automatic upload হয়ে preview দেখাবে — আলাদা করে
+"upload" বাটন চাপার দরকার নাই। তারপর normal-ভাবে "Create draft" বা "Save
+changes" চাপলে সেই ছবিটাই article-এর featured image হিসেবে save হবে।
