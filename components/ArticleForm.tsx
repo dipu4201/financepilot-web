@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   adminApi,
   type AdminArticle,
   type Author,
   type Category,
 } from "@/lib/admin-api";
+import { uploadImage } from "@/lib/supabase";
 
 interface ArticleFormProps {
   articleId?: number;
@@ -36,6 +38,15 @@ export function ArticleForm({ articleId, initial }: ArticleFormProps) {
     initial?.is_editors_pick ?? false
   );
 
+  const [featuredMediaId, setFeaturedMediaId] = useState<number | null>(
+    initial?.featured_media_id ?? null
+  );
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(
+    initial?.featured_media?.url ?? null
+  );
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedMessage, setSavedMessage] = useState<string | null>(null);
@@ -49,6 +60,29 @@ export function ArticleForm({ articleId, initial }: ArticleFormProps) {
       .catch((err) => setError(err.message));
   }, []);
 
+  async function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    setImageError(null);
+
+    try {
+      const url = await uploadImage(file);
+      const media = await adminApi.media.create({
+        url,
+        alt_text: title || file.name,
+        file_name: file.name,
+      });
+      setFeaturedMediaId(media.id);
+      setImagePreviewUrl(media.url);
+    } catch (err) {
+      setImageError(err instanceof Error ? err.message : "Image upload failed.");
+    } finally {
+      setUploadingImage(false);
+    }
+  }
+
   function buildPayload() {
     return {
       title,
@@ -56,6 +90,7 @@ export function ArticleForm({ articleId, initial }: ArticleFormProps) {
       content,
       category_id: Number(categoryId),
       author_id: Number(authorId),
+      featured_media_id: featuredMediaId ?? undefined,
       is_featured: isFeatured,
       is_trending: isTrending,
       is_editors_pick: isEditorsPick,
@@ -107,6 +142,30 @@ export function ArticleForm({ articleId, initial }: ArticleFormProps) {
           onChange={(e) => setTitle(e.target.value)}
           className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-primary"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Featured image</label>
+        {imagePreviewUrl && (
+          <div className="relative mt-2 aspect-video w-full max-w-sm overflow-hidden rounded-xl bg-slate-100">
+            <Image
+              src={imagePreviewUrl}
+              alt="Featured preview"
+              fill
+              className="object-cover"
+              sizes="400px"
+            />
+          </div>
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageSelect}
+          disabled={uploadingImage}
+          className="mt-2 block text-sm"
+        />
+        {uploadingImage && <p className="mt-1 text-xs text-muted">Uploading…</p>}
+        {imageError && <p className="mt-1 text-xs text-red-600">{imageError}</p>}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
