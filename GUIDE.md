@@ -1,38 +1,32 @@
-# Article লেখার Editor
+# Article Detail Page
 
 ## যা আছে এতে
 
 ```
-components/ArticleForm.tsx              ← মূল ফর্ম (নতুন/এডিট দুটোতেই ব্যবহার হয়)
-app/admin/articles/new/page.tsx         ← নতুন article লেখার পেজ
-app/admin/articles/[id]/edit/page.tsx   ← বিদ্যমান article সম্পাদনার পেজ
-lib/admin-api.ts                        ← আপডেট (articles.get() যোগ হয়েছে) — পুরনোটা replace করো
+app/articles/[slug]/page.tsx   ← article-এর নিজস্ব পেজ (title, content, SEO)
+globals-addition.css           ← article content-এর জন্য styling (আলাদা ফাইল, merge করতে হবে)
 ```
 
 ## Upload করার নিয়ম
 
 `financepilot-web` repo-তে:
 
-1. `components/` নামে নতুন folder তৈরি করো (না থাকলে), তাতে `ArticleForm.tsx` upload করো
-2. `app/admin/articles/new/page.tsx` — নতুন path তৈরি করে upload করো
-3. `app/admin/articles/[id]/edit/page.tsx` — খেয়াল রাখো folder নামে বর্গাকার
-   bracket `[id]` ঠিক আছে (এটা Next.js-এর dynamic route syntax, বানান exact
-   রাখতে হবে)
-4. `lib/admin-api.ts` — পুরনোটা সম্পূর্ণ **replace** করো এই নতুন ভার্সন দিয়ে
+1. `app/articles/[slug]/page.tsx` — নতুন path তৈরি করে upload করো (bracket
+   `[slug]` সহ exact নাম)
+2. `globals-addition.css`-এর ভিতরের পুরো কোড কপি করো, তারপর repo-র
+   `app/globals.css` ফাইলে **Edit** করে একদম নিচে গিয়ে paste করো (এটা নতুন
+   ফাইল না, বিদ্যমান `globals.css`-এর শেষে যোগ করা)
+3. Commit করো
 
-Commit করো — Vercel automatic redeploy করবে।
+## যা কাজ করবে এখন
 
-## ব্যবহার
+- Homepage-এ article card-এ ক্লিক করলে পুরো article পেজ খুলবে
+- Title, author, date, reading time, featured image, full content দেখাবে
+- Google-এর জন্য Article + Breadcrumb JSON-LD schema, আর proper meta
+  title/description/OG tags থাকবে (SEO-friendly)
 
-1. Dashboard-এ "New article" চাপো
-2. Title, category, author, content লিখে **"Create draft"** চাপো —
-   এতে article তৈরি হয়ে draft অবস্থায় থাকবে, edit page-এ নিয়ে যাবে
-3. Edit page-এ থাকা অবস্থায় **"Publish"** চাপলে article live হয়ে যাবে,
-   homepage-এ trending/featured section-এ (checkbox টিক দেওয়া থাকলে) দেখা যাবে
+## এখনো বাকি
 
-## সীমাবদ্ধতা (এখনকার জন্য)
-
-Article edit করার সময় সব article টেনে এনে id দিয়ে খোঁজা হয় (backend-এ
-একটা নির্দিষ্ট article-এর জন্য আলাদা admin endpoint এখনো নাই) — খুব বেশি
-article হলে এটা ধীর হয়ে যাবে, তখন backend-এ `GET
-/api/admin/articles/{id}` endpoint যোগ করতে হবে।
+- `/categories/[slug]` পেজ — category-তে ক্লিক করলে এখনো ৪০৪ দেখাবে
+- `/newsletter` পেজ
+- `/authors/[slug]` পেজ
